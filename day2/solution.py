@@ -37,13 +37,20 @@ reports = []
 num_safe = 0
 
 def is_safe(report_data):
-    current_direction = 0
+    '''
+    Determine if dataset is safe
+    '''
+    current_direction = 0  # Use to track direction (0 - first check, -1 - decreasing, 1 - increasing)
     num_samples = len(report_data)
-    current  = int(report_data[0])
+    current  = int(report_data[0])  # Gotta convert to int
+
     for i in range(1, num_samples):
-        next_sample = int(report_data[i])
-        if current == next_sample:
+        next_sample = int(report_data[i])  # Grab the next sample
+
+        if current == next_sample:  # If two consequtive samples are the same, fail
             return False
+        
+        # Check for changing of direction (increase/decrease). Only relevant on second sample and beyond
         if current > next_sample:
             if current_direction == -1:
                 return False
@@ -52,21 +59,24 @@ def is_safe(report_data):
             if current_direction == 1:
                 return False
             current_direction = -1
-        if abs(current - next_sample) > 3:
+        if abs(current - next_sample) > 3:  # If difference of more than 3, fail
             return False
         current = int(report_data[i])
-    return True
+    return True  # If we pass every check, report is safe
 
-with open('/Users/johnmcteague/code/aoc2024/day2/input','r') as infile:
+# Load the file 
+with open('input','r') as infile:
     for line in infile:
+        # Split the data into data points
         data = line.rstrip().split(' ')
         reports.append(data)
 
 for report in reports:
+    # Check if safe and increment counter
     if is_safe(report):
-        print(f'{report} - True')
+        print(f'{report} - Safe')
         num_safe = num_safe + 1
     else:
-        print(f'{report} - False')
+        print(f'{report} - Unsafe')
 
 print(f'Total Safe Reports: {num_safe}')
